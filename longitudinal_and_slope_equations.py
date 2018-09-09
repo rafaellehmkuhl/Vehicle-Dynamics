@@ -20,12 +20,7 @@ l2 = 2.1 # Distancia do eixo traseiro em ralaçao ao Cg
 ff = 0.04 # Fator de atrito das rodas dianteiras
 fr = 0.04 # Fator de atrito das rodas traseiras
 
-def delta_v(a, b, c, v, dt):
-        # Calculate the increment in velocity "dv" as a function of the previous velocity and the increment in time
-        dv = ((v**2*a+b)/c)*dt
-        return dv
-
-for incl in range(0, 50, 3):
+def calculate_abc(incl):
     # Calculate inclination angle
     theta = math.atan(incl/100)
 
@@ -45,12 +40,18 @@ for incl in range(0, 50, 3):
         + m
         - m*hcg * (ff+fr) / (l1+l2)
         )
+    return a, b, c
 
+def delta_v(a, b, c, v, dt):
+        # Calculate the increment in velocity "dv" as a function of the previous velocity and the increment in time
+        dv = ((v**2*a+b)/c)*dt
+        return dv
+
+def get_velocity_curve(a, b, c):
     # Create vectors (Python's "list") to store the values of time and velocity
     time = []
-    accel = []
     vel = []
-    dist = []
+    accel = []
 
     # Initialize variables for (previous and current) velocity and for time increment
     old_v = 0
@@ -59,11 +60,10 @@ for incl in range(0, 50, 3):
 
     _accel = 1 # Acceleration [m/s^2]
     _vel = 0
-    _dist = 0 # Distance value [m]
 
     # Time and Velocity increment Loop
     # Increment the time in steps of 1 millisecond
-    while _accel > 0.00001:
+    while _accel > 0.001:
         # Increment time
         t_inst = t_inst + dt
         # Increment in time is calculated by the delta_v function
@@ -72,31 +72,32 @@ for incl in range(0, 50, 3):
         _vel = old_v + dv
         # Updates acceleration value
         _accel = dv/dt
-        # Updates distance value
-        _dist = _dist + _vel * dt
         # Updates previous velocity value with the new velocity value, so it can be incremented on the next iteration
         old_v = _vel
         # Append (include) time and velocity values on their lists (vectors)
         time.append(t_inst)
         vel.append(_vel*3.6)
-        accel.append(_accel)
-        dist.append(_dist)
+        accel.append(dv/dt)
 
+    return time, vel, accel
+
+tva_df = []
+for incl in range(0, 31, 3):
+
+    # Calculate constants 'a', 'b' and 'c' for given inclination
+    a, b, c = calculate_abc(incl)
+    # Get Time_Velocity curve for given constants
+    time, vel, accel = get_velocity_curve(a, b, c)
     # Create Time x Velocity plot
-    # plt.subplot(311)
     plt.plot(time, vel, label=str(incl) + '%')
-
-    # # Create Time x Velocity plot
-    # plt.subplot(312)
-    # plt.plot(time, accel)
-    # plt.title('Aceleraçao')
-    # plt.grid(True)
-
-    # # Create Time x Velocity plot
-    # plt.subplot(313)
-    # plt.plot(time, dist)
-    # plt.title('Distancia')
-    # plt.grid(True)
+    # Create and append DataFrame
+    df = pd.DataFrame({
+            'Tempo': time,
+            'Velocidade': vel,
+            'Aceleraçao': accel
+        })
+    df.set_index('Tempo', inplace=True)
+    tva_df.append(df)
 
 # Show plots
 plt.title('Velocidade x Tempo')
@@ -106,17 +107,10 @@ plt.grid(True)
 plt.legend(title='Inclinaçao')
 plt.show()
 
-# df1 = pd.DataFrame({
-#     'Tempo': time,
-#     'Velocidade': vel,
-#     'Aceleraçao': accel,
-#     'Distancia': dist
-# })
-
-# df1.set_index('Tempo', inplace=True)
-
-# print(df1)
-
-# tempo100 = df1[df1['Velocidade'].gt(100)].index[0]
-
-# print(tempo100)
+# for incl in range(0, 31):
+#     try:
+#         # Print time for 0-100km/h
+#         time100 = tva_df[incl][tva_df[incl]['Velocidade'].gt(100)].index[0]
+#         print('Time for 0-100km/h: ' + str(time100))
+#     except:
+#         pass
