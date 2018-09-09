@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 # Fix the constants
 
 m = 2100 # Massa [kg]
-Fxf = 1000 # Fx eixo frontal
-Fxr = 1000 # Fx eixo traseiro
+Fxf = 0 # Fx eixo frontal
+Fxr = 5800 # Fx eixo traseiro
 rho = 1.23 # Densidade do ar
 Cx = 0.45 # Coeficiente de arrasto do carro
 Af = 2 # Area frontal do carro
@@ -18,8 +18,6 @@ theta = math.atan(incl/100) # Angulaçao da rampa
 g = 9.81 # Gravidade
 l1 = 1 # Distancia do eixo dianteiro em ralaçao ao Cg
 l2 = 2.1 # Distancia do eixo traseiro em ralaçao ao Cg
-ff = 0.5 # Fator de atrito das rodas dianteiras
-fr = 0.5 # Fator de atrito das rodas traseiras
 
 # Calculate the three constant therms
 a = (
@@ -42,6 +40,8 @@ c = (
 print('a: ' + str(a))
 print('b: ' + str(b))
 print('c: ' + str(c))
+ff = 0.04 # Fator de atrito das rodas dianteiras
+fr = 0.04 # Fator de atrito das rodas traseiras
 
 def delta_v(a, b, c, v, dt):
     # Divide the increment in time "dt" by 1000 to transform from milliseconds to seconds
