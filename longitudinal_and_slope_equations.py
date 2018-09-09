@@ -1,7 +1,7 @@
 # Import Math library (for trigonometry) and Matplotlib for plotting
 import math
 import matplotlib.pyplot as plt
-
+import pandas as pd
 
 # Fix the constants
 
@@ -89,3 +89,18 @@ plt.ylabel('Velocidade [km/h]')
 plt.grid(True)
 plt.legend(title='Inclinaçao')
 plt.show()
+
+# df1 = pd.DataFrame({
+#     'Tempo': time,
+#     'Velocidade': vel,
+#     'Aceleraçao': accel,
+#     'Distancia': dist
+# })
+
+# df1.set_index('Tempo', inplace=True)
+
+# print(df1)
+
+# tempo100 = df1[df1['Velocidade'].gt(100)].index[0]
+
+# print(tempo100)
