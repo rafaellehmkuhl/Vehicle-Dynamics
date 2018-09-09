@@ -82,6 +82,22 @@ for incl in range(0, 50, 3):
         accel.append(_accel)
         dist.append(_dist)
 
+    # Create Time x Velocity plot
+    # plt.subplot(311)
+    plt.plot(time, vel, label=str(incl) + '%')
+
+    # # Create Time x Velocity plot
+    # plt.subplot(312)
+    # plt.plot(time, accel)
+    # plt.title('Aceleraçao')
+    # plt.grid(True)
+
+    # # Create Time x Velocity plot
+    # plt.subplot(313)
+    # plt.plot(time, dist)
+    # plt.title('Distancia')
+    # plt.grid(True)
+
 # Show plots
 plt.title('Velocidade x Tempo')
 plt.xlabel('Tempo [s]')
